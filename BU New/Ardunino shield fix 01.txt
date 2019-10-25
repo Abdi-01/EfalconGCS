@@ -1,0 +1,396 @@
+#include <SoftwareSerial.h>
+#define MSP_RAW_GPS 106
+#define MSP_ATTITUDE 108
+#define MSP_ALTITUDE 109
+#define MSP_PID 112
+#define MSP_SET_PID 202
+
+//String inputString = "";         // a string to hold incoming data
+//boolean stringComplete = false;  // whether the string is complete
+//String commandString = "";
+
+int count,q;
+uint8_t kPID[30];
+String inString = "";
+
+
+SoftwareSerial mspSerial(3, 4); // RX TX
+uint8_t gps_fix;
+int16_t Aroll, Apitch, Ayaw, AEstAlt, Avario; //attitude, altitude
+int32_t lat, lon;
+double dlong = 0, dlat = 0;
+uint8_t rollp, rolli, rolld ;
+uint8_t pitchp, pitchi, pitchd ;
+uint8_t yawp, yawi, yawd ;
+uint8_t altp, alti, altd ;
+
+
+void setup() {
+    mspSerial.begin(115200);
+    Serial.begin(57600);
+}
+
+void loop() {
+    MSPattitude();
+    MSPaltitude();
+    MSPrawGPS();
+    MSPpid();
+    //Protokol data : 1. Multiwii = MF,roll,pitch,yaw,alt,lat,long,ch1,ch2,ch3,ch4,baterai,flight mode
+    if((Aroll < 360 && Aroll > -360) && (Apitch < 360 && Apitch > -360) && (Ayaw < 360 && Ayaw > -360) && (dlat < 1 && dlat > -10 || dlat == 0 ) && (dlong < 114 && dlong > 110 || dlong == 0)){
+    Serial.println(String("MW")+","+String(Aroll)+","+String(Apitch)+","+String(Ayaw)+","+String(AEstAlt/100.0)+
+      ","+String(dlat,7)+","+String(dlong,7)+","+String(1500)+","+String(1000)+","+String(500)+","+String(2000)+","+String(12.25)+","+String("QX")/*+"/"+String(rollp)+"/"+String(rolli)+"/"+String(rolld)+
+        "/"+String(pitchp)+"/"+String(pitchi)+"/"+String(pitchd)+
+        "/"+String(yawp)+"/"+String(yawi)+"/"+String(yawd)*/);
+        }
+   delay(50);//*/
+   while(Serial.available()){
+      int dataIN=Serial.read();
+      if(isDigit(dataIN)){
+        inString += (char)dataIN;
+      }
+      if(dataIN=='/'){
+        Serial.print("Send PID......\n");
+        kPID[count]=inString.toInt();
+        inString = "";
+        count++;
+      }
+      if(dataIN=='a'){
+        for(q=0;q<30;q++){
+        Serial.println(String(kPID[q]));
+        }
+      }
+    sendPID(MSP_SET_PID, kPID, 30);
+    delay(150);   
+    }
+    kPID[30] = {0};
+    
+ 
+}
+///////////////////////////////////////////Command Function///////////////////////////////////
+
+///////////////////////////////////////////REQUEST/////////////////////////////////////////////
+void MSPrawGPS(){
+  uint8_t datad = 0;
+  uint8_t *data = &datad;
+  
+  sendMSP(MSP_RAW_GPS, data, 0);
+  readDataGPS();
+}
+
+void MSPattitude(){
+  uint8_t datad = 0;
+  uint8_t *data = &datad;
+  
+  sendMSP(MSP_ATTITUDE, data, 0);
+  readDataATT();
+}
+
+
+void MSPaltitude(){
+  uint8_t datad = 0;
+  uint8_t *data = &datad;
+  
+  sendMSP(MSP_ALTITUDE, data, 0);
+  readDataALT();
+}
+
+void MSPpid(){
+  uint8_t datad = 0;
+  uint8_t *data = &datad;
+  
+  sendMSP(MSP_PID, data, 0);
+  readDataPID();
+}
+
+///////////////////////////////////////////SEND_REQUEST/////////////////////////////////////////////
+void sendMSP(uint8_t cmd, uint8_t *data, uint8_t n_bytes) {
+
+    uint8_t checksum = 0;
+
+    mspSerial.write((byte *) "$M<", 3);
+    mspSerial.write(n_bytes);
+    checksum ^= n_bytes;
+
+    mspSerial.write(cmd);
+    //Serial.println("cmd"+cmd);
+    checksum ^= cmd;
+    //Serial.println("$M<"+n_bytes+cmd+checksum);
+    mspSerial.write(checksum);
+    //Serial.println("Request");
+}
+
+///////////////////////////////////////////RECEIVE/////////////////////////////////////////////
+void readDataATT() {
+  delay(100);
+    byte count = 0;
+
+    int16_t roll;
+    int16_t pitch;
+    int16_t yaw;
+
+    while (mspSerial.available()) {
+        count += 1;
+        byte c = mspSerial.read();
+        //Serial.println(String(c));
+        switch (count) {
+            case 6:
+                roll = c;
+                break;
+            case 7:
+                roll <<= 8;
+                roll += c;
+                roll = (roll & 0xFF00) >> 8 | (roll & 0x00FF) << 8; // Reverse the order of bytes
+                //Serial.println(roll);
+                break;
+            case 8:
+                pitch += c;
+                break;
+            case 9:
+                pitch <<= 8;
+                pitch += c;
+                pitch = (pitch & 0xFF00) >> 8 | (pitch & 0x00FF) << 8; // Reverse the order of bytes
+                break;
+            case 10:
+                yaw += c;
+                break;
+            case 11:
+                yaw <<= 8;
+                yaw += c;
+                yaw = (yaw & 0xFF00) >> 8 | (yaw & 0x00FF) << 8; // Reverse the order of bytes
+                break;
+        }
+    }    
+  Aroll=roll/10.0;
+  Apitch=pitch/10.0;
+  Ayaw=yaw;
+  
+}
+
+void readDataALT() {
+    delay(100);
+
+    byte count = 0;
+
+    int32_t EstAlt; //Satuan cm
+    int16_t vario; //Satuan cm/s
+    
+    while (mspSerial.available()) {
+        count += 1;
+        byte c = mspSerial.read();
+        //Serial.println(String(c));
+        switch (count) {
+            case 6:
+                EstAlt = c;
+                break;
+            case 7:
+                EstAlt <<= 8;
+                EstAlt += c;
+                EstAlt = (EstAlt & 0xFF00) >> 8 | (EstAlt & 0x00FF) << 8; // Reverse the order of bytes
+                //Serial.println(EstAlt);
+                break;
+            case 8:
+                vario += c;
+                break;
+            case 9:
+                vario <<= 8;
+                vario += c;
+                vario = (vario & 0xFF00) >> 8 | (vario & 0x00FF) << 8; // Reverse the order of bytes
+                break;
+            /*case 10:
+                yaw += c;
+                break;
+            case 11:
+                yaw <<= 8;
+                yaw += c;
+                yaw = (yaw & 0xFF00) >> 8 | (yaw & 0x00FF) << 8; // Reverse the order of bytes
+                break;*/
+        }
+    }
+    AEstAlt=EstAlt; //Satuan cm
+    Avario=vario;
+    //Serial.print("Receive ");
+    //Serial.println("/"+String(EstAlt)+"/"+String(vario));
+    //Serial.print(" vario: " + String(vario/10.0));
+    //Serial.println(" Yaw: " + String(yaw));
+}
+
+void readDataGPS() {
+  delay(100);
+    byte count = 0;
+    //uint8_t gps_fix;
+    uint8_t gps_numsat;
+    uint32_t gps_lat;
+    uint32_t gps_lon;
+    uint16_t gps_alt;
+    uint16_t gps_speed;
+    uint16_t gps_ground_course;
+
+    while (mspSerial.available()) {
+        count += 1;
+        byte c = mspSerial.read();
+        //Serial.println(String(count) + "Data Raw "+ String(c));
+        uint32_t data=0;
+        uint32_t buff=0;
+        
+        switch (count) {
+            case 6:
+                gps_fix = c;
+                break;
+            case 7:
+                gps_numsat += c;
+                break;
+            case 8:
+                gps_lat += c;
+                break;
+            case 9:
+                gps_lat <<= 8;
+                gps_lat += c;
+                break;
+            case 10:
+                gps_lat <<= 8;
+                gps_lat += c;
+                break;
+            case 11:
+                gps_lat <<= 8;
+                gps_lat += c;
+                data= (gps_lat & 0x000000ff) << 24;
+                buff = data;
+                data = (gps_lat & 0x0000ff00) << 8;
+                buff += data;
+                data = (gps_lat & 0x00ff0000) >> 8;
+                buff += data;
+                data = (gps_lat & 0xff000000) >> 24;
+                buff += data;
+                //gps_lat =buff;
+                lat=buff;
+                dlat = lat/10000000.0;
+                //dataLat=gps_lat;
+                break;
+            case 12:
+                gps_lon += c;
+                break;
+            case 13:
+                gps_lon <<= 8;
+                gps_lon += c;
+                break;
+            case 14:
+                gps_lon <<= 8;
+                gps_lon += c;
+                break;
+            case 15:
+                gps_lon <<= 8;
+                gps_lon += c;
+                data= (gps_lon & 0x000000ff) << 24;
+                buff = data;
+                data = (gps_lon & 0x0000ff00) << 8;
+                buff += data;
+                data = (gps_lon & 0x00ff0000) >> 8;
+                buff += data;
+                data = (gps_lon & 0xff000000) >> 24;
+                buff += data;
+                lon = buff;
+                dlong = lon/10000000.0;
+                break;
+            case 16:
+                gps_alt += c;
+                break;
+            case 17:
+                gps_alt <<= 8;
+                gps_alt += c;
+                gps_alt = (gps_alt & 0xFF00) >> 8 | (gps_alt & 0x00FF) << 8; // Reverse the order of bytes
+                break;/*
+            case 18:
+                gps_speed += c;
+                break;
+            case 19:
+                gps_speed <<= 8;
+                gps_speed += c;
+                gps_speed = (gps_speed & 0xFF00) >> 8 | (gps_speed & 0x00FF) << 8; // Reverse the order of bytes
+                break;
+            case 20:
+                gps_ground_course += c;
+                break;
+            case 21:
+                gps_ground_course <<= 8;
+                gps_ground_course += c;
+                gps_ground_course = (gps_ground_course & 0xFF00) >> 8 | (gps_ground_course & 0x00FF) << 8; // Reverse the order of bytes
+                break;*/               
+        }
+    }
+    
+
+    //Serial.println(String(tol)+"//"+String(tol,HEX));
+    //Serial.println("GPS Fix "+String(gps_fix)+"/ Sat : "+String(gps_numsat)+"/ Lat : "+String(dlat,7)+"/ Lon : "+String(dlong,7)+"/ Alt : "+String(gps_alt));
+}
+
+void readDataPID() {
+    delay(100);
+    byte count = 0;
+
+    while (mspSerial.available()) {
+        count += 1;
+        byte c = mspSerial.read();
+        //Serial.println(String(c));
+        ///*
+        switch (count) {
+            case 6:
+                rollp = c;
+                break;
+            case 7:
+                rolli = c;
+                break;
+            case 8:
+                rolld = c;
+                break;
+            case 9:
+                pitchp = c;
+                break;
+            case 10:
+                pitchi = c;
+                break;
+            case 11:
+                pitchd = c;
+                break;
+            case 12:
+                yawp = c;
+                break;
+            case 13:
+                yawi = c;
+                break;
+            case 14:
+                yawd = c;
+                break;
+        }
+    }
+
+    //Serial.print("Receive ");
+//    Serial.println(String(roll/10.0)+"/"+String(pitch/10.0)+"/"+String(yaw));
+    //Serial.print(" Pitch: " + String(pitch/10.0));
+    //Serial.println(" Yaw: " + String(yaw));
+    //*/
+}
+
+void sendPID(uint8_t cmd, uint8_t * data, uint8_t n_bytes) {
+  uint8_t checksum = 0;
+  //uint8_t roll_p = 22;
+   
+  // Send the MSP header and message length
+  mspSerial.write((byte *)"$M<", 3);
+  mspSerial.write(n_bytes);
+  checksum ^= n_bytes;
+ 
+  // Send the op-code
+  mspSerial.write(cmd);
+  checksum ^= cmd;
+   
+  // Send the data bytes
+  for(int i = 0; i < n_bytes; i++) {
+    mspSerial.write(data[i]);
+//    Serial.println(data[i]);
+    checksum ^= data[i];
+    
+  }
+   
+  // Send the checksum
+  mspSerial.write(checksum);
+}

@@ -1,0 +1,43 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 28
+    defaultConfig {
+        applicationId "com.example.al_ghifar.efalcongcs"
+        minSdkVersion 21
+        targetSdkVersion 28
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+repositories {
+    maven {
+        url "https://s3.amazonaws.com/repo.commonsware.com"
+    }
+}
+
+dependencies {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    //noinspection GradleCompatible
+    implementation 'com.android.support:appcompat-v7:28.0.0'
+    implementation 'com.google.android.gms:play-services-maps:15.0.1'
+    implementation 'com.android.support.constraint:constraint-layout:1.1.3'
+    implementation 'io.github.controlwear:virtualjoystick:1.10.1'
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'com.android.support.test:runner:1.0.2'
+    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+    //implementation files('libs/mediaplayersdk.jar')
+    implementation 'com.github.pedroSG94.vlc-example-streamplayer:libvlc:2.5.14v3'
+    implementation 'com.github.pedroSG94.vlc-example-streamplayer:pedrovlc:2.5.14v3'
+    implementation 'com.android.support:cardview-v7:28.0.0'
+    implementation 'com.commonsware.cwac:merge:1.1.2'
+    implementation 'com.google.maps.android:android-maps-utils:0.4+'
+}

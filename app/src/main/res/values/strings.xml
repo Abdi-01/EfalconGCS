@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">Pigeon</string>
+    <string name="title_activity_efalcongcs">EfalconGCS</string>
+    <string name="roll">Roll</string>
+    <string name="pitch">Pitch</string>
+    <string name="yaw">Yaw</string>
+    <string name="level">Level</string>
+    <string name="navr">NavR</string>
+    <string name="posr">PosR</string>
+    <string name="pos">Pos</string>
+    <string name="altitude">Altitude</string>
+    <string name="vel">Vel</string>
+    <string name="mag">Mag</string>
+</resources>

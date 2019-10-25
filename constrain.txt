@@ -1,0 +1,432 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Efalcongcs">
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/namebar"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="#f0f0f0">
+
+        <ImageView
+            android:id="@+id/imageView2"
+            android:layout_width="150dp"
+            android:layout_height="match_parent"
+            android:background="#f5f5f5"
+            android:src="@drawable/pigeonnew"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0" />
+
+        <Chronometer
+            android:id="@+id/timer"
+            android:layout_width="52dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:padding="10dp"
+            android:text="00:00"
+            android:textColor="#808080"
+            android:textSize="25dp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/btnPlay"
+            app:layout_constraintHorizontal_bias="0.972"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/imageView2"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0" />
+
+        <ImageButton
+            android:id="@+id/btnPlay"
+            android:layout_width="50dp"
+            android:layout_height="45dp"
+            android:layout_gravity="bottom"
+            android:layout_margin="2dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginEnd="4dp"
+            android:layout_marginTop="4dp"
+            android:background="#f0f0f0"
+            android:onClick="onPlay"
+            android:src="@drawable/ic_stream"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0" />
+
+    </android.support.constraint.ConstraintLayout>
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/relativeLayout4"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"
+        app:layout_constraintBottom_toTopOf="@+id/map"
+        app:layout_constraintEnd_toStartOf="@+id/map"
+        app:layout_constraintStart_toStartOf="@+id/map"
+        app:layout_constraintTop_toTopOf="@+id/map">
+
+        <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/map"
+            android:name="com.google.android.gms.maps.SupportMapFragment"
+            android:layout_width="956dp"
+            android:layout_height="477dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:context=".Efalcongcs"
+            tools:layout_conversion_absoluteHeight="478dp"
+            tools:layout_conversion_absoluteWidth="962dp" />
+
+        <ImageButton
+            android:id="@+id/BtMonitor"
+            style="@style/Widget.AppCompat.Button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="onMonitor"
+            android:src="@drawable/ic_flip"
+            android:theme="@style/AppTheme.Button"
+            tools:layout_conversion_absoluteHeight="40dp"
+            tools:layout_conversion_absoluteWidth="40dp"
+            tools:layout_editor_absoluteX="3dp"
+            tools:layout_editor_absoluteY="63dp" />
+
+        <ImageButton
+            android:id="@+id/BtWP"
+            style="@style/Widget.AppCompat.Button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="44dp"
+            android:layout_marginTop="5dp"
+            android:onClick="onWP"
+            android:src="@drawable/ic_wpp"
+            android:theme="@style/AppTheme.Button"
+            app:layout_constraintBottom_toTopOf="@+id/BtConnect"
+            app:layout_constraintTop_toBottomOf="@+id/BtMonitor"
+            app:layout_constraintVertical_bias="0.116"
+            tools:layout_conversion_absoluteHeight="40dp"
+            tools:layout_conversion_absoluteWidth="40dp"
+            tools:layout_editor_absoluteX="3dp" />
+
+        <ImageButton
+            android:id="@+id/BtConnect"
+            style="@style/Widget.AppCompat.Button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="onClickStart"
+            android:src="@drawable/ic_connect"
+            android:theme="@style/AppTheme.Button"
+            tools:layout_conversion_absoluteHeight="40dp"
+            tools:layout_conversion_absoluteWidth="40dp"
+            tools:layout_editor_absoluteX="3dp"
+            tools:layout_editor_absoluteY="162dp" />
+
+        <ImageButton
+            android:id="@+id/BtDisconnect"
+            style="@style/Widget.AppCompat.Button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:layout_marginTop="5dp"
+            android:onClick="onClickStop"
+            android:src="@drawable/ic_disconnect"
+            android:theme="@style/AppTheme.Button"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/BtConnect"
+            app:layout_constraintVertical_bias="0.0"
+            tools:layout_conversion_absoluteHeight="40dp"
+            tools:layout_conversion_absoluteWidth="40dp"
+            tools:layout_editor_absoluteX="3dp" />
+
+        <SeekBar
+            android:id="@+id/altitude"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:max="75"
+            android:progress="0"
+            android:rotation="270"
+            anqdroid:thumb="@drawable/ic_uav2"
+            tools:layout_conversion_absoluteHeight="32dp"
+            tools:layout_conversion_absoluteWidth="210dp"
+            tools:layout_editor_absoluteX="-78dp"
+            tools:layout_editor_absoluteY="343dp" />
+
+        <TextView
+            android:id="@+id/tvAlt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp"
+            android:layout_marginStart="16dp"
+            android:text="Altitude"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:layout_conversion_absoluteHeight="19dp"
+            tools:layout_conversion_absoluteWidth="53dp" />
+
+        <SurfaceView
+            android:id="@+id/Stream"
+            android:layout_width="254dp"
+            android:layout_height="145dp"
+            android:layout_marginBottom="5dp"
+            android:layout_marginEnd="5dp"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="5dp"
+            app:layout_constraintBottom_toTopOf="@+id/et_endpoint"
+            app:layout_constraintEnd_toEndOf="@+id/map"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="@+id/map"
+            app:layout_constraintTop_toTopOf="@+id/map"
+            app:layout_constraintVertical_bias="0.0" />
+
+        <EditText
+            android:id="@+id/et_endpoint"
+            android:layout_width="252dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:layout_marginEnd="5dp"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="5dp"
+            android:inputType="textUri"
+            android:text="rtsp://192.168.1.3:8554/unicast"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/map"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toEndOf="@+id/BtDisconnect"
+            app:layout_constraintTop_toTopOf="@+id/map"
+            app:layout_constraintVertical_bias="0.364"
+            tools:layout_conversion_absoluteHeight="44dp"
+            tools:layout_conversion_absoluteWidth="250dp" />
+
+        <android.support.constraint.ConstraintLayout
+            android:id="@+id/monitorLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="190dp"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="5dp"
+            android:background="@drawable/rounded_anim"
+            app:layout_constraintBottom_toBottomOf="@+id/map"
+            app:layout_constraintTop_toTopOf="@+id/map"
+            app:layout_constraintVertical_bias="0.758"
+            tools:layout_conversion_absoluteHeight="188dp"
+            tools:layout_conversion_absoluteWidth="90dp"
+            tools:layout_editor_absoluteX="866dp">
+
+            <ImageView
+                android:id="@+id/roll_image"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:layout_marginBottom="5dp"
+                android:padding="2dp"
+                android:src="@drawable/roll"
+                app:layout_constraintBottom_toBottomOf="@+id/tvYaw"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.0" />
+
+            <TextView
+                android:id="@+id/tvRoll"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="ROLL"
+                android:textColor="#F5F5F5"
+                android:textSize="10dp"
+                android:textStyle="bold"
+                app:layout_constraintHorizontal_bias="0.509"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/roll_image" />
+
+            <ImageView
+                android:id="@+id/yaw_image"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:layout_marginBottom="5dp"
+                android:layout_marginTop="92dp"
+                android:padding="2dp"
+                android:src="@drawable/yaw"
+                app:layout_constraintBottom_toBottomOf="@+id/tvYaw"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/roll_image"
+                app:layout_constraintVertical_bias="0.062" />
+
+            <TextView
+                android:id="@+id/tvYaw"
+                android:layout_width="wrap_content"
+                android:layout_height="15dp"
+                android:layout_marginBottom="5dp"
+                android:text="YAW"
+                android:textColor="#F5F5F5"
+                android:textSize="10dp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintHorizontal_bias="0.508"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/yaw_image"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="1.0" />
+        </android.support.constraint.ConstraintLayout>
+
+        <android.support.constraint.ConstraintLayout
+            android:id="@+id/waypointLayout"
+            android:layout_width="254dp"
+            android:layout_height="142dp"
+            android:layout_marginBottom="5dp"
+            android:layout_marginEnd="5dp"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="60dp"
+            android:background="#ff8092b0"
+            app:layout_constraintBottom_toBottomOf="@+id/map"
+            app:layout_constraintEnd_toEndOf="@+id/map"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="@+id/map"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0"
+            tools:layout_conversion_absoluteHeight="250dp"
+            tools:layout_conversion_absoluteWidth="200dp">
+
+            <TextView
+                android:id="@+id/colLat"
+                android:layout_width="129dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="2dp"
+                android:padding="2dp"
+                android:text="LATITUDE"
+                android:textAlignment="center"
+                android:textColor="#fff"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ListView
+                android:id="@+id/lvlat"
+                android:layout_width="130dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="1dp"
+                android:layout_marginEnd="52dp"
+                app:layout_constraintEnd_toStartOf="@+id/lvlng"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/colLat"></ListView>
+
+            <TextView
+                android:id="@+id/tvWPlat"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/colLng"
+                android:layout_width="122dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="2dp"
+                android:padding="2dp"
+                android:text="LONGITUDE"
+                android:textAlignment="center"
+                android:textColor="#fff"
+                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintLeft_toRightOf="@+id/colLat"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ListView
+                android:id="@+id/lvlng"
+                android:layout_width="123dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="1dp"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/colLng"></ListView>
+
+            <TextView
+                android:id="@+id/tvWPlng"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </android.support.constraint.ConstraintLayout>
+
+        <Button
+            android:id="@+id/BtsendWP"
+            android:layout_width="251dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="64dp"
+            android:layout_marginEnd="5dp"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="5dp"
+            android:onClick="onSendWP"
+            android:text="Send Waypoint"
+            app:layout_constraintBottom_toBottomOf="@+id/map"
+            app:layout_constraintEnd_toEndOf="@+id/map"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="@+id/map"
+            app:layout_constraintTop_toBottomOf="@+id/Stream"
+            app:layout_constraintVertical_bias="0.0"
+            tools:layout_conversion_absoluteHeight="48dp"
+            tools:layout_conversion_absoluteWidth="210dp" />
+
+        <TextView
+            android:id="@+id/tvSend"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:layout_conversion_absoluteHeight="19dp"
+            tools:layout_conversion_absoluteWidth="150dp"
+            tools:layout_editor_absoluteX="0dp"
+            tools:layout_editor_absoluteY="503dp" />
+
+        <TextView
+            android:id="@+id/tvSerial"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="#37474F"
+            android:gravity="bottom"
+            android:maxLines="2"
+            android:scrollbarAlwaysDrawVerticalTrack="true"
+            android:scrollbars="vertical"
+            android:text="Serial Monitor"
+            android:textColor="#ECEFF1"
+            android:textSize="10dp"
+            tools:layout_conversion_absoluteHeight="14dp"
+            tools:layout_conversion_absoluteWidth="61dp"
+            tools:layout_editor_absoluteX="895dp"
+            tools:layout_editor_absoluteY="515dp" />
+
+    </android.support.constraint.ConstraintLayout>
+
+    <RelativeLayout
+        android:layout_width="62dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true">
+
+        <TextView
+            android:id="@+id/tvLat"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp" />
+
+        <TextView
+            android:id="@+id/tvLong"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:layout_toRightOf="@id/tvLat" />
+    </RelativeLayout>
+
+</RelativeLayout>

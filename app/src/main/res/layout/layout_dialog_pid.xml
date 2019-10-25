@@ -1,0 +1,466 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:layout_width="400dp"
+        android:layout_height="255dp"
+        android:layout_centerInParent="true"
+        android:focusableInTouchMode="true">
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignTop="@+id/textView"
+            android:layout_marginEnd="131dp"
+            android:text="I (0.0 - 0.250)"
+            android:textSize="12sp" />
+
+        <TextView
+            android:id="@+id/textView3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignTop="@+id/textView2"
+            android:layout_marginEnd="27dp"
+            android:text="D (0 - 100)"
+            android:textSize="12sp" />
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginStart="91dp"
+            android:text="P (0.0 - 20.0)"
+            android:textSize="12sp" />
+
+        <ScrollView
+            android:layout_width="400dp"
+            android:layout_height="238dp"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentStart="true">
+
+            <TableLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/Roll"
+                        android:layout_width="70dp"
+                        android:layout_height="wrap_content"
+                        android:layout_column="1"
+                        android:fontFamily="sans-serif"
+                        android:text="@string/roll"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:typeface="normal" />
+
+                    <EditText
+                        android:id="@+id/rollP"
+                        android:layout_width="110dp"
+                        android:layout_height="wrap_content"
+                        android:layout_column="2"
+                        android:inputType="numberDecimal"
+                        android:text="33"
+                        android:textAlignment="center"
+                        android:textSize="18sp" />
+
+                    <EditText
+                        android:id="@+id/rolli"
+                        android:layout_width="110dp"
+                        android:layout_height="wrap_content"
+                        android:layout_column="3"
+                        android:ems="10"
+                        android:inputType="numberDecimal"
+                        android:text="30"
+                        android:textAlignment="center" />
+
+                    <EditText
+                        android:id="@+id/rollD"
+                        android:layout_width="110dp"
+                        android:layout_height="wrap_content"
+                        android:layout_column="4"
+                        android:ems="10"
+                        android:inputType="numberDecimal"
+                        android:text="23"
+                        android:textAlignment="center" />
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/Pitch"
+                        android:layout_width="70dp"
+                        android:layout_height="wrap_content"
+                        android:layout_column="1"
+                        android:fontFamily="sans-serif"
+                        android:text="@string/pitch"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:typeface="normal" />
+
+                    <EditText
+                        android:id="@+id/pitchP"
+                        android:layout_width="110dp"
+                        android:layout_height="wrap_content"
+                        android:layout_column="2"
+                        android:inputType="numberDecimal"
+                        android:text="33"
+                        android:textAlignment="center"
+                        android:textSize="18sp" />
+
+                    <EditText
+                        android:id="@+id/pitchI"
+                        android:layout_width="110dp"
+                        android:layout_height="wrap_content"
+                        android:layout_column="3"
+                        android:ems="10"
+                        android:inputType="numberDecimal"
+                        android:text="30"
+                        android:textAlignment="center" />
+
+                    <EditText
+                        android:id="@+id/pitchD"
+                        android:layout_width="110dp"
+                        android:layout_height="wrap_content"
+                        android:layout_column="4"
+                        android:ems="10"
+                        android:inputType="numberDecimal"
+                        android:text="23"
+                        android:textAlignment="center" />
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/Yaw"
+                        android:layout_width="70dp"
+                        android:layout_height="wrap_content"
+                        android:layout_column="1"
+                        android:fontFamily="sans-serif"
+                        android:text="@string/yaw"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:typeface="normal" />
+
+                    <EditText
+                        android:id="@+id/yawP"
+                        android:layout_width="110dp"
+                        android:layout_height="wrap_content"
+                        android:layout_column="2"
+                        android:inputType="numberDecimal"
+                        android:text="68"
+                        android:textAlignment="center"
+                        android:textSize="18sp" />
+
+                    <EditText
+                        android:id="@+id/yawI"
+                        android:layout_width="110dp"
+                        android:layout_height="wrap_content"
+                        android:layout_column="3"
+                        android:ems="10"
+                        android:inputType="numberDecimal"
+                        android:text="45"
+                        android:textAlignment="center" />
+
+                    <EditText
+                        android:id="@+id/yawD"
+                        android:layout_width="110dp"
+                        android:layout_height="wrap_content"
+                        android:layout_column="4"
+                        android:ems="10"
+                        android:inputType="numberDecimal"
+                        android:text="0"
+                        android:textAlignment="center" />
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/Altitude"
+                        android:layout_width="70dp"
+                        android:layout_height="wrap_content"
+                        android:layout_column="1"
+                        android:fontFamily="sans-serif"
+                        android:text="@string/altitude"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:typeface="normal" />
+
+                    <EditText
+                        android:id="@+id/altP"
+                        android:layout_width="110dp"
+                        android:layout_height="wrap_content"
+                        android:layout_column="2"
+                        android:inputType="numberDecimal"
+                        android:text="64"
+                        android:textAlignment="center"
+                        android:textSize="18sp" />
+
+                    <EditText
+                        android:id="@+id/altI"
+                        android:layout_width="110dp"
+                        android:layout_height="wrap_content"
+                        android:layout_column="3"
+                        android:ems="10"
+                        android:inputType="numberDecimal"
+                        android:text="25"
+                        android:textAlignment="center" />
+
+                    <EditText
+                        android:id="@+id/altD"
+                        android:layout_width="110dp"
+                        android:layout_height="wrap_content"
+                        android:layout_column="4"
+                        android:ems="10"
+                        android:inputType="numberDecimal"
+                        android:text="24"
+                        android:textAlignment="center" />
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/Pos"
+                        android:layout_width="70dp"
+                        android:layout_height="wrap_content"
+                        android:layout_column="1"
+                        android:fontFamily="sans-serif"
+                        android:text="@string/pos"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:typeface="normal" />
+
+                    <EditText
+                        android:id="@+id/posP"
+                        android:layout_width="110dp"
+                        android:layout_height="wrap_content"
+                        android:layout_column="2"
+                        android:inputType="numberDecimal"
+                        android:text="15"
+                        android:textAlignment="center"
+                        android:textSize="18sp" />
+
+                    <EditText
+                        android:id="@+id/posI"
+                        android:layout_width="110dp"
+                        android:layout_height="wrap_content"
+                        android:layout_column="3"
+                        android:ems="10"
+                        android:inputType="numberDecimal"
+                        android:text="0"
+                        android:textAlignment="center" />
+
+                    <EditText
+                        android:id="@+id/posD"
+                        android:layout_width="110dp"
+                        android:layout_height="wrap_content"
+                        android:layout_column="4"
+                        android:ems="10"
+                        android:inputType="numberDecimal"
+                        android:textAlignment="center" />
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/PosR"
+                        android:layout_width="70dp"
+                        android:layout_height="wrap_content"
+                        android:layout_column="1"
+                        android:fontFamily="sans-serif"
+                        android:text="PosR"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:typeface="normal" />
+
+                    <EditText
+                        android:id="@+id/posRP"
+                        android:layout_width="110dp"
+                        android:layout_height="wrap_content"
+                        android:layout_column="2"
+                        android:inputType="numberDecimal"
+                        android:text="34"
+                        android:textAlignment="center"
+                        android:textSize="18sp" />
+
+                    <EditText
+                        android:id="@+id/posRI"
+                        android:layout_width="110dp"
+                        android:layout_height="wrap_content"
+                        android:layout_column="3"
+                        android:ems="10"
+                        android:inputType="numberDecimal"
+                        android:text="14"
+                        android:textAlignment="center" />
+
+                    <EditText
+                        android:id="@+id/posRD"
+                        android:layout_width="110dp"
+                        android:layout_height="wrap_content"
+                        android:layout_column="4"
+                        android:ems="10"
+                        android:inputType="numberDecimal"
+                        android:text="53"
+                        android:textAlignment="center" />
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/NavR"
+                        android:layout_width="70dp"
+                        android:layout_height="wrap_content"
+                        android:layout_column="1"
+                        android:fontFamily="sans-serif"
+                        android:text="NavR"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:typeface="normal" />
+
+                    <EditText
+                        android:id="@+id/navRP"
+                        android:layout_width="110dp"
+                        android:layout_height="wrap_content"
+                        android:layout_column="2"
+                        android:inputType="numberDecimal"
+                        android:text="25"
+                        android:textAlignment="center"
+                        android:textSize="18sp" />
+
+                    <EditText
+                        android:id="@+id/navRI"
+                        android:layout_width="110dp"
+                        android:layout_height="wrap_content"
+                        android:layout_column="3"
+                        android:ems="10"
+                        android:inputType="numberDecimal"
+                        android:text="33"
+                        android:textAlignment="center" />
+
+                    <EditText
+                        android:id="@+id/navRD"
+                        android:layout_width="110dp"
+                        android:layout_height="wrap_content"
+                        android:layout_column="4"
+                        android:ems="10"
+                        android:inputType="numberDecimal"
+                        android:text="83"
+                        android:textAlignment="center" />
+                </TableRow>
+
+                <!--
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/Level"
+                        android:layout_width="70dp"
+                        android:layout_height="wrap_content"
+                        android:layout_column="1"
+                        android:fontFamily="sans-serif"
+                        android:text="Level"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:typeface="normal" />
+
+                    <EditText
+                        android:id="@+id/levelP"
+                        android:layout_width="110dp"
+                        android:layout_height="wrap_content"
+                        android:layout_column="2"
+                        android:inputType="numberDecimal"
+                        android:text="90"
+                        android:textAlignment="center"
+                        android:textSize="18sp" />
+
+                    <EditText
+                        android:id="@+id/levelI"
+                        android:layout_width="110dp"
+                        android:layout_height="wrap_content"
+                        android:layout_column="3"
+                        android:ems="10"
+                        android:inputType="numberDecimal"
+                        android:text="10"
+                        android:textAlignment="center" />
+
+                    <EditText
+                        android:id="@+id/levelD"
+                        android:layout_width="110dp"
+                        android:layout_height="wrap_content"
+                        android:layout_column="4"
+                        android:ems="10"
+                        android:inputType="numberDecimal"
+                        android:text="100"
+                        android:textAlignment="center" />
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/Mag"
+                        android:layout_width="70dp"
+                        android:layout_height="wrap_content"
+                        android:layout_column="1"
+                        android:fontFamily="sans-serif"
+                        android:text="Mag"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:typeface="normal" />
+
+                    <EditText
+                        android:id="@+id/magP"
+                        android:layout_width="110dp"
+                        android:layout_height="wrap_content"
+                        android:layout_column="2"
+                        android:inputType="numberDecimal"
+                        android:text="40"
+                        android:textAlignment="center"
+                        android:textSize="18sp" />
+
+                    <EditText
+                        android:id="@+id/magI"
+                        android:layout_width="110dp"
+                        android:layout_height="wrap_content"
+                        android:layout_column="3"
+                        android:ems="10"
+                        android:inputType="numberDecimal"
+                        android:textAlignment="center" />
+
+                    <EditText
+                        android:id="@+id/magD"
+                        android:layout_width="110dp"
+                        android:layout_height="wrap_content"
+                        android:layout_column="4"
+                        android:ems="10"
+                        android:inputType="numberDecimal"
+                        android:textAlignment="center" />
+                </TableRow> -->
+            </TableLayout>
+        </ScrollView>
+    </RelativeLayout>
+
+</RelativeLayout>

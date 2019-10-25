@@ -1,0 +1,688 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Efalcongcs">
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true">
+
+        <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/map"
+            android:name="com.google.android.gms.maps.SupportMapFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            tools:context=".Efalcongcs" />
+
+        <android.support.v7.widget.CardView
+            android:id="@+id/namebar"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            app:cardBackgroundColor="#f0f0f0"
+            app:cardCornerRadius="20dp">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:background="@drawable/rounded_namebar">
+
+                <TextView
+                    android:id="@+id/tvMode"
+                    android:layout_width="400dp"
+                    android:layout_height="50dp"
+                    android:layout_centerInParent="true"
+                    android:padding="5dp"
+                    android:text="Flight Mode"
+                    android:textAlignment="center"
+                    android:textColor="#808080"
+                    android:textSize="30dp"
+                    android:textStyle="bold" />
+
+                <ImageView
+                    android:layout_width="93dp"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentTop="true"
+                    android:layout_marginStart="14dp"
+                    android:background="#ffffff"
+                    android:src="@drawable/pigeonnew" />
+
+                <Chronometer
+                    android:id="@+id/timer"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentTop="true"
+                    android:layout_marginEnd="89dp"
+                    android:padding="10dp"
+                    android:text="00:00"
+                    android:textColor="#808080"
+                    android:textSize="22sp"
+                    android:textStyle="bold" />
+
+                <android.support.v7.widget.CardView
+                    android:id="@+id/Lstream"
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="2dp"
+                    android:clickable="true"
+                    android:shape="ring"
+                    app:cardBackgroundColor="@color/colorDarkGray"
+                    app:cardCornerRadius="18dp"
+                    app:cardElevation="10dp">
+
+                    <ImageButton
+                        android:id="@+id/btnStream"
+                        android:layout_width="35dp"
+                        android:layout_height="35dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="2dp"
+                        android:background="@drawable/circle"
+                        android:clickable="true"
+                        android:onClick="onDisplayStream"
+                        android:padding="10dp"
+                        android:src="@drawable/ic_streamwhite"
+                        android:theme="@style/AppTheme.Button" />
+                </android.support.v7.widget.CardView>
+
+                <TextView
+                    android:id="@+id/tvDevice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginEnd="204dp"
+                    android:text="Device"
+                    android:textAlignment="center"
+                    android:textStyle="italic" />
+
+                <TextView
+                    android:id="@+id/tvBattery"
+                    android:layout_width="59dp"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_toStartOf="@+id/Lstream"
+                    android:text="Battery"
+                    android:textAlignment="center"
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
+
+            </RelativeLayout>
+        </android.support.v7.widget.CardView>
+
+        <android.support.v7.widget.CardView
+            android:id="@+id/btmonitor"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_below="@+id/namebar"
+            android:layout_margin="5dp"
+            android:clickable="true"
+            android:shape="ring"
+            app:cardBackgroundColor="@color/colorDarkGray"
+            app:cardCornerRadius="20dp"
+            app:cardElevation="10dp">
+
+            <ImageButton
+                android:id="@+id/BtMonitor"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_gravity="center"
+                android:background="@drawable/circle"
+                android:clickable="true"
+                android:onClick="onMonitor"
+                android:src="@drawable/ic_flip" />
+        </android.support.v7.widget.CardView>
+
+        <android.support.v7.widget.CardView
+            android:id="@+id/btwp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_below="@+id/btmonitor"
+            android:layout_margin="5dp"
+            android:clickable="true"
+            android:shape="ring"
+            app:cardBackgroundColor="@color/colorDarkGray"
+            app:cardCornerRadius="20dp"
+            app:cardElevation="10dp">
+
+            <ImageButton
+                android:id="@+id/BtWP"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:background="@drawable/circle"
+                android:clickable="true"
+                android:onClick="onWP"
+                android:padding="5dp"
+                android:src="@drawable/wp02" />
+        </android.support.v7.widget.CardView>
+
+        <android.support.v7.widget.CardView
+            android:id="@+id/btconnect"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_below="@+id/btwp"
+            android:layout_margin="5dp"
+            android:shape="ring"
+            app:cardBackgroundColor="@color/colorDarkGray"
+            app:cardCornerRadius="20dp"
+            app:cardElevation="10dp">
+
+            <ImageButton
+                android:id="@+id/BtConnect"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_gravity="center"
+                android:background="@drawable/circle"
+                android:onClick="onClickStart"
+                android:src="@drawable/ic_connect" />
+        </android.support.v7.widget.CardView>
+
+        <android.support.v7.widget.CardView
+            android:id="@+id/btdisconnect"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_below="@+id/btconnect"
+            android:layout_margin="5dp"
+            android:shape="ring"
+            app:cardBackgroundColor="@color/colorDarkGray"
+            app:cardCornerRadius="20dp"
+            app:cardElevation="10dp">
+
+            <ImageButton
+                android:id="@+id/BtDisconnect"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_gravity="center"
+                android:background="@drawable/circle"
+                android:onClick="onClickStop"
+                android:src="@drawable/ic_disconnect" />
+        </android.support.v7.widget.CardView>
+
+        <FrameLayout
+            android:id="@+id/seekAltitude"
+            android:layout_width="40dp"
+            android:layout_height="210dp"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@id/btdisconnect"
+            android:layout_margin="3dp"
+            android:orientation="vertical">
+
+            <SeekBar
+                android:id="@+id/altitude"
+                android:layout_width="210dp"
+                android:layout_height="32dp"
+                android:layout_gravity="center"
+                android:layout_marginLeft="4dp"
+                android:layout_marginTop="3dp"
+                android:max="75"
+                android:progress="0"
+                android:rotation="270"
+                android:thumb="@drawable/ic_uav2" />
+        </FrameLayout>
+
+        <TextView
+            android:id="@+id/tvAlt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/seekAltitude"
+            android:layout_marginStart="12dp"
+            android:layout_marginTop="-3dp"
+            android:text="0 M"
+            android:textAlignment="center"
+            android:textStyle="bold" />
+
+        <RelativeLayout
+            android:id="@+id/monitorLayout"
+            android:layout_width="300dp"
+            android:layout_height="122dp"
+            android:layout_alignParentEnd="true"
+            android:layout_below="@id/streamDisplay"
+            android:layout_margin="10dp"
+            android:background="@drawable/rounded_anim">
+
+            <ImageView
+                android:id="@+id/roll_image"
+                android:layout_width="118dp"
+                android:layout_height="match_parent"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentTop="true"
+                android:padding="5dp"
+                android:src="@drawable/roll" />
+
+            <TextView
+                android:id="@+id/tvRoll"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                android:maxLines="2"
+                android:padding="2dp"
+                android:text="ROLL"
+                android:textAlignment="center"
+                android:textColor="#F5F5F5"
+                android:textSize="12dp"
+                android:textStyle="bold" />
+
+            <ImageView
+                android:id="@+id/yaw_image"
+                android:layout_width="116dp"
+                android:layout_height="match_parent"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:padding="5dp"
+                android:src="@drawable/yaw" />
+
+            <TextView
+                android:id="@+id/tvYaw"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginBottom="20dp"
+                android:maxLines="2"
+                android:padding="2dp"
+                android:text="YAW"
+                android:textAlignment="center"
+                android:textColor="#F5F5F5"
+                android:textSize="12dp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tvPitch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="40dp"
+                android:maxLines="2"
+                android:padding="2dp"
+                android:text="PITCH"
+                android:textAlignment="center"
+                android:textColor="#F5F5F5"
+                android:textSize="12dp"
+                android:textStyle="bold" />
+        </RelativeLayout>
+
+        <TableLayout
+            android:id="@+id/streamDisplay"
+            android:layout_width="250dp"
+            android:layout_height="200dp"
+            android:layout_alignEnd="@+id/monitorLayout"
+            android:layout_below="@+id/namebar"
+            android:background="@drawable/rounded_dispstream"
+            android:visibility="visible">
+
+            <RelativeLayout
+                android:id="@+id/dis"
+                android:layout_width="match_parent"
+                android:layout_height="150dp">
+
+                <TextureView
+                    android:id="@+id/Stream"
+                    android:layout_width="match_parent"
+                    android:layout_height="150dp"
+                    tools:alpha="1"
+                    tools:foreground="#78909C"></TextureView>
+            </RelativeLayout>
+
+            <TableRow
+                android:id="@+id/ctrldisp"
+                android:layout_width="match_parent"
+                android:layout_height="150dp"
+                android:layout_gravity="bottom">
+
+                <ImageButton
+                    android:id="@+id/BtCapture"
+                    style="@style/Widget.AppCompat.Button"
+                    android:layout_width="45dp"
+                    android:layout_height="45dp"
+                    android:layout_column="1"
+                    android:layout_margin="2dp"
+                    android:background="@drawable/circle"
+                    android:onClick="onCapture"
+                    android:src="@drawable/ic_capture"
+                    android:theme="@style/AppTheme.Button" />
+
+                <ImageButton
+                    android:id="@+id/btnPlay"
+                    android:layout_width="45dp"
+                    android:layout_height="45dp"
+                    android:layout_column="2"
+                    android:layout_margin="2dp"
+                    android:background="@drawable/circle"
+                    android:onClick="onPlay"
+                    android:src="@drawable/ic_play"
+                    android:theme="@style/AppTheme.Button" />
+
+                <EditText
+                    android:id="@+id/url"
+                    android:layout_width="150dp"
+                    android:layout_height="50dp"
+                    android:layout_column="3"
+                    android:inputType="textUri"
+                    android:text="rtsp://192.168.43.1:8080/h264_ulaw.sdp"
+                    android:textSize="15dp"
+                    />
+            </TableRow>
+
+        </TableLayout>
+
+        <RelativeLayout
+            android:id="@+id/waypointLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="100dp"
+            android:layout_alignParentBottom="true"
+            android:layout_centerInParent="true"
+            android:layout_margin="5dp"
+            android:background="#ff8092b0">
+
+            <TableLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true">
+
+                <TableRow
+                    android:layout_width="350dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1">
+
+                    <TextView
+                        android:layout_width="75dp"
+                        android:layout_height="wrap_content"
+                        android:layout_column="1"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="No"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="150dp"
+                        android:layout_height="wrap_content"
+                        android:layout_column="2"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="Latitude"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="150dp"
+                        android:layout_height="wrap_content"
+                        android:layout_column="3"
+                        android:gravity="center"
+                        android:text="Longitude"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="75dp"
+                        android:layout_height="wrap_content"
+                        android:layout_column="4"
+                        android:gravity="center"
+                        android:text="Distance"
+                        android:textStyle="bold" />
+
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="350dp"
+                    android:layout_height="75dp">
+
+                    <ListView
+                        android:id="@+id/lvnumber"
+                        android:layout_width="75dp"
+                        android:layout_height="75dp"
+                        android:layout_column="1"></ListView>
+
+                    <ListView
+                        android:id="@+id/lvlat"
+                        android:layout_width="150dp"
+                        android:layout_height="75dp"
+                        android:layout_column="2"
+                        android:gravity="center"></ListView>
+
+                    <ListView
+                        android:id="@+id/lvlng"
+                        android:layout_width="150dp"
+                        android:layout_height="75dp"
+                        android:layout_column="3"
+                        android:gravity="center"></ListView>
+
+                    <ListView
+                        android:id="@+id/lvdistance"
+                        android:layout_width="75dp"
+                        android:layout_height="75dp"
+                        android:layout_column="4"
+                        android:gravity="center"></ListView>
+
+                </TableRow>
+
+            </TableLayout>
+        </RelativeLayout>
+
+
+        <Button
+            android:id="@+id/BtsendWP"
+            android:layout_width="78dp"
+            android:layout_height="48dp"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="34dp"
+            android:layout_marginStart="-5dp"
+            android:layout_toEndOf="@+id/waypointLayout"
+            android:onClick="onSendWP"
+            android:text="Send Waypoint"
+            android:textAlignment="center"
+            android:textSize="10sp" />
+
+        <TextView
+            android:id="@+id/tvTimeDelay"
+            android:layout_width="70dp"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/tvSerial"
+            android:layout_alignParentEnd="true"
+            android:layout_marginBottom="-5dp"
+            android:layout_marginEnd="5dp"
+            android:background="#37474F"
+            android:text="Time Delay : "
+            android:textAlignment="textStart"
+            android:textColor="#ECEFF1"
+            android:textSize="8sp" />
+
+        <TextView
+            android:id="@+id/tvSerial"
+            android:layout_width="217dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginEnd="5dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="0dp"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="5dp"
+            android:background="#37474F"
+            android:gravity="bottom"
+            android:maxLines="2"
+            android:scrollbarAlwaysDrawVerticalTrack="true"
+            android:scrollbars="vertical"
+            android:text="Serial Monitor : "
+            android:textColor="#ECEFF1"
+            android:textSize="8sp" />
+
+        <RelativeLayout
+            android:id="@+id/chlayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignEnd="@+id/monitorLayout"
+            android:layout_below="@+id/btconnect"
+            android:layout_marginTop="-5dp">
+
+            <TableLayout
+                android:layout_width="150dp"
+                android:layout_height="200dp">
+
+                <TableRow
+                    android:layout_width="150dp"
+                    android:layout_height="20dp">
+
+                    <TextView
+                        android:id="@+id/tvCH1"
+                        android:background="#37474F"
+                        android:textColor="#ECEFF1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="20dp"
+                        android:gravity="right"
+                        android:text="Channel 1" />
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="150dp"
+                    android:layout_height="30dp">
+
+                    <ProgressBar
+                        android:id="@+id/Remotech1"
+                        style="?android:attr/progressBarStyleHorizontal"
+                        android:layout_width="150dp"
+                        android:layout_height="30dp"
+                        android:max="2000"
+                        android:min="1000" />
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="150dp"
+                    android:layout_height="20dp">
+
+                    <TextView
+                        android:id="@+id/tvCH2"
+                        android:background="#37474F"
+                        android:textColor="#ECEFF1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="20dp"
+                        android:gravity="right"
+                        android:text="Channel 2" />
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="150dp"
+                    android:layout_height="30dp">
+
+                    <ProgressBar
+                        android:id="@+id/Remotech2"
+                        style="?android:attr/progressBarStyleHorizontal"
+                        android:layout_width="150dp"
+                        android:layout_height="30dp"
+                        android:max="2000"
+                        android:min="1000" />
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="150dp"
+                    android:layout_height="20dp">
+
+                    <TextView
+                        android:id="@+id/tvCH3"
+                        android:background="#37474F"
+                        android:textColor="#ECEFF1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="20dp"
+                        android:gravity="right"
+                        android:text="Channel 3" />
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="150dp"
+                    android:layout_height="30dp">
+
+                    <ProgressBar
+                        android:id="@+id/Remotech3"
+                        style="?android:attr/progressBarStyleHorizontal"
+                        android:layout_width="150dp"
+                        android:layout_height="30dp"
+                        android:max="2000"
+                        android:min="1000" />
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="150dp"
+                    android:layout_height="20dp">
+
+                    <TextView
+                        android:id="@+id/tvCH4"
+                        android:background="#37474F"
+                        android:textColor="#ECEFF1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="20dp"
+                        android:gravity="right"
+                        android:text="Channel 4" />
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="150dp"
+                    android:layout_height="30dp">
+
+                    <ProgressBar
+                        android:id="@+id/Remotech4"
+                        style="?android:attr/progressBarStyleHorizontal"
+                        android:layout_width="150dp"
+                        android:layout_height="30dp"
+                        android:max="2000"
+                        android:min="1000" />
+                </TableRow>
+            </TableLayout>
+
+        </RelativeLayout>
+
+        <!--<SeekBar
+            android:id="@+id/seekThrottle"
+            android:layout_width="161dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/tvAlt"
+            android:max="255"
+            android:min="0"
+            android:progress="1075" />-->
+
+        <Button
+            android:id="@+id/BtPID"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:layout_alignEnd="@+id/monitorLayout"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="130dp"
+            android:text="PID"
+            android:textAlignment="center"
+            android:textSize="12sp" />
+
+    </RelativeLayout>
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true">
+        <TextView
+            android:id="@+id/tvLat"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"/>
+        <TextView
+            android:layout_toRightOf="@id/tvLat"
+            android:id="@+id/tvLong"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"/>
+    </RelativeLayout>
+</RelativeLayout>

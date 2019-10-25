@@ -1,0 +1,758 @@
+package com.example.al_ghifar.efalcongcs;
+
+import android.Manifest;
+import android.animation.ObjectAnimator;
+import android.annotation.TargetApi;
+import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.content.pm.PackageManager;
+import android.graphics.SurfaceTexture;
+import android.location.Location;
+import android.os.Build;
+import android.os.Environment;
+import android.os.SystemClock;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.FragmentActivity;
+import android.os.Bundle;
+
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.sql.Savepoint;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.hardware.usb.UsbDevice;
+import android.hardware.usb.UsbDeviceConnection;
+import android.hardware.usb.UsbManager;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AppCompatActivity;
+import android.view.Surface;
+import android.view.TextureView;
+import android.view.animation.Animation;
+import android.view.animation.LinearInterpolator;
+import android.view.animation.RotateAnimation;
+import android.util.Log;
+import android.view.View;
+import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.Chronometer;
+import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.ListView;
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
+import android.widget.SeekBar;
+import android.widget.TextView;
+import android.widget.Toast;
+import android.widget.ArrayAdapter;
+import com.felhr.usbserial.UsbSerialDevice;
+import com.felhr.usbserial.UsbSerialInterface;
+
+import java.io.UnsupportedEncodingException;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Arrays;
+
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.GoogleMap.OnMapClickListener;
+import com.google.android.gms.maps.GoogleMap.OnMapLongClickListener;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.Circle;
+import com.google.android.gms.maps.model.CircleOptions;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
+
+import com.pedro.vlc.VlcListener;
+import com.pedro.vlc.VlcVideoLibrary;
+import org.videolan.libvlc.MediaPlayer;
+
+public class Efalcongcs extends FragmentActivity implements OnMapReadyCallback, VlcListener,
+        TextureView.SurfaceTextureListener {
+    private static final String TAG = "Efalcongcs";
+    public final String ACTION_USB_PERMISSION = "package com.example.al_ghifar.efalcon.USB_PERMISSION";
+    //private final String stream_url ="rtsp://192.168.1.3:8554/unicast";//"rtsp://192.168.43.153:8554/unicast";
+    boolean inH=false, inbef=false;
+    int i = 0, mTracking = 0, countTracking= 0, lst = 0;
+    RelativeLayout LayoutMonitor, LayoutWaypoint;
+    Button sendWPButton, AutoTOButton, ManualTOButton;
+    ImageButton monitorButton, wpButton,startButton, stopButton, btnPlay, captureButton;
+    TextView textView, Troll, Tyaw, Tlat, Tlong, Talt, tvWPSend, tch1, tch2, tch3, tch4,TvMode;
+    SeekBar AltitudeBar;
+    private ProgressBar Aileron, Elevator, Throttle, Rudder;
+    private ImageView HeadingRoll, HeadingYaw;
+    private EditText etEndpoint;
+    UsbManager usbManager;
+    UsbDevice device;
+    UsbSerialDevice serialPort;
+    UsbDeviceConnection connection;
+    private Circle [] circle = new Circle[10];
+    private VlcVideoLibrary vlcVideoLibrary;
+    //SurfaceView surfaceView;
+    private TextureView mStream;
+    private Surface surface;
+    //private MediaPlayer mediaPlayer;
+    private String[] options = new String[]{":fullscreen"};
+    ListView lvLat, lvLng;
+    private float DegreeStart = 0.0f;
+    private Chronometer timeFlight;
+    private long pauseoffset;
+    private boolean running;
+    private GoogleMap mMap;
+    Marker currentMarker;
+    Marker wpMarker;
+    Polyline polyline;
+    private final static int MY_PERMISSION_FINE_LOCATION = 101;
+    double wpla,wpln,wpradius;
+    ArrayList<LatLng> points;
+    ArrayList<LatLng> tracking;
+    ArrayList<String> listLat = new ArrayList<>();
+    ArrayList<String> listLng = new ArrayList<>();
+    ArrayAdapter<String> adapterLat, adapterLng;
+    float[] distance = new float[2];
+    UsbSerialInterface.UsbReadCallback mCallback = new UsbSerialInterface.UsbReadCallback() { //Defining a Callback which triggers whenever data is read.
+        @Override
+        public void onReceivedData(byte[] arg0) {
+            try {
+                final String data = new String(arg0, "UTF-8");
+                String[] parsing = data.split(",");
+                int count = parsing.length;
+                if (count == 11) {
+                    //fungsi monitoring sensor
+                    dataParsing(parsing[0],parsing[2],parsing[3],parsing[4],parsing[5],
+                            parsing[6],parsing[7],parsing[8],parsing[9]);
+                    FMode(parsing[10]);
+                    datalog(parsing[0],parsing[1],parsing[2],parsing[3],parsing[4],parsing[5],
+                            parsing[10]);
+                }
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+
+        }
+    };
+
+    private final BroadcastReceiver broadcastReceiver = new BroadcastReceiver() { //Broadcast Receiver to automatically start and stop the Serial connection.
+        @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR1)
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent.getAction().equals(ACTION_USB_PERMISSION)) {
+                boolean granted = intent.getExtras().getBoolean(UsbManager.EXTRA_PERMISSION_GRANTED);
+                if (granted) {
+                    connection = usbManager.openDevice(device);
+                    serialPort = UsbSerialDevice.createUsbSerialDevice(device, connection);
+                    if (serialPort != null) {
+                        if (serialPort.open()) { //Set Serial Connection Parameters.
+                            setUiEnabled(true);
+                            serialPort.setBaudRate(57600);
+                            serialPort.setDataBits(UsbSerialInterface.DATA_BITS_8);
+                            serialPort.setStopBits(UsbSerialInterface.STOP_BITS_1);
+                            serialPort.setParity(UsbSerialInterface.PARITY_NONE);
+                            serialPort.setFlowControl(UsbSerialInterface.FLOW_CONTROL_OFF);
+                            serialPort.read(mCallback);
+                            //tvAppend(textView,"Serial Connection Opened!\n");
+                        } else {
+                            Log.d("SERIAL", "PORT NOT OPEN");
+                        }
+                    } else {
+                        Log.d("SERIAL", "PORT IS NULL");
+                    }
+                } else {
+                    Log.d("SERIAL", "PERM NOT GRANTED");
+                }
+            } else if (intent.getAction().equals(UsbManager.ACTION_USB_DEVICE_ATTACHED)) {
+                onClickStart(startButton);
+            } else if (intent.getAction().equals(UsbManager.ACTION_USB_DEVICE_DETACHED)) {
+                onClickStop(stopButton);
+            }
+        }
+    };
+
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR1)
+    @Override
+    //protected
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_efalcongcs);
+        Log.d(TAG, "onCreate: Started");
+        reqPermission();
+        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
+        usbManager = (UsbManager) getSystemService(this.USB_SERVICE);
+        startButton = (ImageButton) findViewById(R.id.BtConnect);
+        stopButton = (ImageButton) findViewById(R.id.BtDisconnect);
+        monitorButton = (ImageButton) findViewById(R.id.BtMonitor);
+        wpButton = (ImageButton) findViewById(R.id.BtWP);
+        captureButton = (ImageButton) findViewById(R.id.BtCapture);
+        sendWPButton = (Button) findViewById(R.id.BtsendWP);
+        AutoTOButton = (Button) findViewById(R.id.autoTO);
+        ManualTOButton = (Button) findViewById(R.id.manualTO);
+        textView = (TextView) findViewById(R.id.tvSerial);
+        tvWPSend = (TextView) findViewById(R.id.tvSend);
+        TvMode = (TextView) findViewById(R.id.tvMode);
+        lvLat = (ListView) findViewById(R.id.lvlat);
+        lvLng = (ListView) findViewById(R.id.lvlng);
+        Troll = (TextView) findViewById(R.id.tvRoll);
+        Tyaw = (TextView) findViewById(R.id.tvYaw);
+        Tlat = (TextView) findViewById(R.id.tvLat);
+        Tlong = (TextView) findViewById(R.id.tvLong);
+        Talt = (TextView) findViewById(R.id.tvAlt);
+        AltitudeBar = (SeekBar) findViewById(R.id.altitude);
+        HeadingRoll = (ImageView) findViewById(R.id.roll_image);
+        HeadingYaw = (ImageView) findViewById(R.id.yaw_image);
+        LayoutMonitor = (RelativeLayout) findViewById(R.id.monitorLayout);
+        LayoutWaypoint = (RelativeLayout) findViewById(R.id.waypointLayout);
+        LayoutWaypoint.setVisibility(LayoutWaypoint.INVISIBLE);
+        sendWPButton.setVisibility(sendWPButton.INVISIBLE);
+        etEndpoint = (EditText) findViewById(R.id.et_endpoint);
+        mStream = (TextureView) findViewById(R.id.Stream);
+        mStream.setSurfaceTextureListener(this);
+        Aileron = (ProgressBar)findViewById(R.id.Remotech1);
+        Elevator = (ProgressBar)findViewById(R.id.Remotech2);
+        Throttle = (ProgressBar)findViewById(R.id.Remotech3);
+        Rudder = (ProgressBar)findViewById(R.id.Remotech4);
+        //mStream.setVisibility(mStream.GONE);
+        btnPlay = (ImageButton)findViewById(R.id.btnPlay);
+        vlcVideoLibrary = new VlcVideoLibrary(this, this, mStream);
+        vlcVideoLibrary.setOptions(Arrays.asList(options));
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(ACTION_USB_PERMISSION);
+        filter.addAction(UsbManager.ACTION_USB_DEVICE_ATTACHED);
+        filter.addAction(UsbManager.ACTION_USB_DEVICE_DETACHED);
+        timeFlight = (Chronometer) findViewById(R.id.timer);
+        points = new ArrayList<LatLng>();
+        tracking = new ArrayList<LatLng>();
+        adapterLat = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, listLat);
+        adapterLng = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, listLng);
+        registerReceiver(broadcastReceiver, filter);
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.map);
+        mapFragment.getMapAsync(this);
+        setUiEnabled(false);
+        //DataAlt("15.19");
+    }
+
+    public void onSendWP(View view) {
+        String WPdata = "W";//+listLat.get(0)+","+listLng.get(0)+"#"+listLat.get(1)+","+listLng.get(1)+"#";
+        for(int i = 0; i < lst;i++){
+            WPdata = WPdata + listLat.get(i)+","+listLng.get(i)+"#";
+        }
+        serialPort.write(WPdata.getBytes());
+        textView.setText(WPdata);
+    }
+
+    public void onMonitor(View view) {
+        mTracking = 1;
+        LayoutMonitor.setVisibility(LayoutMonitor.VISIBLE);
+        LayoutWaypoint.setVisibility(LayoutWaypoint.INVISIBLE);
+        sendWPButton.setVisibility(sendWPButton.INVISIBLE);
+        mStream.setVisibility(mStream.GONE);
+        etEndpoint.setVisibility(etEndpoint.VISIBLE);
+        captureButton.setVisibility(captureButton.VISIBLE);
+    }
+
+    public void onWP(View view) {
+        mTracking = 2;
+        LayoutMonitor.setVisibility(LayoutMonitor.VISIBLE);
+        LayoutWaypoint.setVisibility(LayoutWaypoint.VISIBLE);
+        sendWPButton.setVisibility(sendWPButton.VISIBLE);
+        mStream.setVisibility(mStream.INVISIBLE);
+        etEndpoint.setVisibility(etEndpoint.INVISIBLE);
+        captureButton.setVisibility(captureButton.INVISIBLE);
+        mMap.setOnMapClickListener(new OnMapClickListener() {
+            int count = 0;
+            @Override
+            public void onMapClick(LatLng point) {
+                count ++;
+                // Instantiating the class MarkerOptions to plot marker on the map
+                MarkerOptions markerOptions = new MarkerOptions();
+                // Setting latitude and longitude of the marker position
+                markerOptions.position(point);
+                // Setting titile of the infowindow of the marker
+                markerOptions.title("Position" + count);
+                // Setting the content of the infowindow of the marker
+                markerOptions.snippet("Latitude:"+point.latitude+","+"Longitude:"+point.longitude);
+                Double dtLat = new Double(point.latitude);
+                Double dtLng = new Double(point.longitude);
+                String dataLat = dtLat.toString();
+                String dataLng = dtLng.toString();
+                listLat.add(dataLat);
+                adapterLat.notifyDataSetChanged();
+                listLng.add(dataLng);
+                adapterLng.notifyDataSetChanged();
+                lst++;
+                // Instantiating the class PolylineOptions to plot polyline in the map
+                PolylineOptions polylineOptions = new PolylineOptions();
+                // Setting the color of the polyline
+                polylineOptions.color(Color.RED);
+                // Setting the width of the polyline
+                polylineOptions.width(3);
+                // Adding the taped point to the ArrayList
+                points.add(point);
+                // Setting points of polyline
+                polylineOptions.addAll(points);
+                //confWP(point);
+                circle[i] = mMap.addCircle(new CircleOptions()
+                        .center(point)
+                        .radius(10)
+                        .strokeWidth(1.0f)
+                        .strokeColor(Color.BLUE)
+                        .fillColor(0x1500FFFF));
+                // Adding the polyline to the map
+                mMap.addPolyline(polylineOptions);
+                // Adding the marker to the map
+                mMap.addMarker(markerOptions);
+                i++;
+            }
+        });
+
+        lvLat.setAdapter(adapterLat);
+        lvLng.setAdapter(adapterLng);
+
+        mMap.setOnMapLongClickListener(new OnMapLongClickListener() {
+
+            @Override
+            public void onMapLongClick(LatLng point) {
+                // Clearing the markers and polylines in the google map
+                mMap.clear();
+                adapterLat.clear();
+                adapterLng.clear();
+                lst = 0;
+                // Empty the array list
+                points.clear();
+            }
+        });
+
+    }
+
+    public void setUiEnabled(boolean bool) {
+        startButton.setEnabled(!bool);
+        stopButton.setEnabled(bool);
+    }
+
+    public void onCapture(View view) {
+        storeImage(getBitmap());
+        Toast.makeText(this, "Capture", Toast.LENGTH_SHORT).show();
+    }
+
+    public void onClickStart(View view) {
+        startButton.setBackgroundColor(Color.LTGRAY);
+        HashMap<String, UsbDevice> usbDevices = usbManager.getDeviceList();
+        if (!usbDevices.isEmpty()) {
+            boolean keep = true;
+            for (Map.Entry<String, UsbDevice> entry : usbDevices.entrySet()) {
+                device = entry.getValue();
+                int deviceVID = device.getVendorId();
+                if (deviceVID == 0x10C4)//3DR 433 Telemetry Vendor ID
+                {
+                    PendingIntent pi = PendingIntent.getBroadcast(this, 0, new Intent(ACTION_USB_PERMISSION), 0);
+                    usbManager.requestPermission(device, pi);
+                    keep = false;
+                } else {
+                    connection = null;
+                    device = null;
+                }
+                if (!keep)
+                    break;
+            }
+        }
+        //starttimeFlight();
+
+    }
+
+    public void onClickStop(View view) {
+        setUiEnabled(false);
+        startButton.setBackgroundColor(Color.parseColor("#78909C"));
+        serialPort.close();
+        stoptimeFlight();
+    }
+
+    public void onPlay(View view) {
+        mStream.setVisibility(mStream.VISIBLE);
+        if (!vlcVideoLibrary.isPlaying()) {
+            try {
+                vlcVideoLibrary.play(etEndpoint.getText().toString());
+            } catch (IllegalArgumentException | SecurityException | IllegalStateException e) {
+                Log.d(TAG, e.getMessage());
+            }
+        } else {
+            vlcVideoLibrary.stop();
+        }
+    }
+
+    public void onAutoTakeOff(View view) {
+        String on = "A";
+        serialPort.write(on.getBytes());
+        textView.setText(on);
+    }
+
+    public void onManualTakeOff(View view) {
+        String off = "M";
+        serialPort.write(off.getBytes());
+        textView.setText(off);
+    }
+
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        //Efalcongcs my = new Efalcongcs();
+        mMap = googleMap;
+        // mMap.addMarker(new MarkerOptions().position(my.koordinat).icon(BitmapDescriptorFactory.fromResource(R.drawable.efalcon)));
+        // Add a marker in Sydney and move the camera
+        LatLng Indonesia = new LatLng(-2.021746310975856, 113.36910344660284);
+        //mMap.addMarker(new MarkerOptions().position(koordinat).title("Surabaya"));
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(Indonesia, 5));
+        //mMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            mMap.setMyLocationEnabled(true);
+            mMap.setPadding(0,575,0,0);
+
+        } else {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, MY_PERMISSION_FINE_LOCATION);
+            }
+        }//*/
+
+    }
+
+    private void dataParsing(final String roll, final String yaw, final String lat, final String lng, final String alt, final String ch1, final String ch2, final String ch3, final String ch4) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                DataRoll(roll);
+                DataRoll(roll);
+                DataYaw(yaw);
+                DataYaw(yaw);
+                DataAlt(alt);
+                Aileron (ch1);
+                Elevator(ch2);
+                Throttle(ch3);
+                Rudder(ch4);
+                TrackingDrone(lat,lng);
+            }
+        });
+    }
+
+    private void DataRoll(String dataRoll) {
+        Float aroll = Float.valueOf(dataRoll);
+        Troll.setText("Roll\n" + dataRoll);
+        RotateAnimation raR = new RotateAnimation(
+                -DegreeStart,
+                aroll,
+                Animation.RELATIVE_TO_SELF, 0.5f,
+                Animation.RELATIVE_TO_SELF, 0.5f);
+        // set the compass animation after the end of the reservation status
+        raR.setFillAfter(true);
+        // set how long the animation for the compass image will take place
+        raR.setDuration(210);
+        // Start animation of compass image
+        HeadingRoll.startAnimation(raR);
+        DegreeStart = -aroll;
+    }
+
+    private void DataYaw(String dataYaw) {
+        Float ayaw = Float.valueOf(dataYaw);
+        Tyaw.setText("Yaw\n"+dataYaw);
+        RotateAnimation raY = new RotateAnimation(
+                -DegreeStart,
+                ayaw,
+                Animation.RELATIVE_TO_SELF, 0.5f,
+                Animation.RELATIVE_TO_SELF, 0.5f);
+        // set the compass animation after the end of the reservation status
+        raY.setFillAfter(true);
+        // set how long the animation for the compass image will take place
+        raY.setDuration(210);
+        // Start animation of compass image
+        HeadingYaw.startAnimation(raY);
+        DegreeStart = -ayaw;
+    }
+
+    private void DataAlt(String dataAlt) {
+        AltitudeBar.setEnabled(false);
+        Talt.setText(dataAlt + " M");
+        Float aalt = Float.valueOf(dataAlt);
+        Integer i = Math.round(aalt);
+        if (i > 0){
+            starttimeFlight();
+        }
+        ObjectAnimator progressAnimator = ObjectAnimator.ofInt(AltitudeBar, "progress", i, i);
+        progressAnimator.setDuration(1000);
+        progressAnimator.setInterpolator(new LinearInterpolator());
+        progressAnimator.start();
+    }
+
+    private void Aileron(String channel1) {
+        tch1 = (TextView) findViewById(R.id.tvCH1);
+        tch1.setText("CH1 : " + channel1);
+        Float chAileron = Float.valueOf(channel1);
+        Integer j = Math.round(chAileron);
+        ObjectAnimator progressBarAnimator = ObjectAnimator.ofInt(Aileron, "progress", j, j);
+        progressBarAnimator.setDuration(1000);
+        progressBarAnimator.setInterpolator(new LinearInterpolator());
+        progressBarAnimator.start();
+    }
+
+    private void Elevator(String channel2) {
+        tch2 = (TextView) findViewById(R.id.tvCH2);
+        tch2.setText("CH2 : " + channel2);
+        Float chElevator = Float.valueOf(channel2);
+        Integer k = Math.round(chElevator);
+        ObjectAnimator progressBarAnimator = ObjectAnimator.ofInt(Elevator, "progress", k, k);
+        progressBarAnimator.setDuration(1000);
+        progressBarAnimator.setInterpolator(new LinearInterpolator());
+        progressBarAnimator.start();
+    }
+
+    private void Throttle(String channel3) {
+        tch3 = (TextView) findViewById(R.id.tvCH3);
+        tch3.setText("CH3 : " + channel3);
+        Float chThrottle = Float.valueOf(channel3);
+        Integer l = Math.round(chThrottle);
+        ObjectAnimator progressBarAnimator = ObjectAnimator.ofInt(Throttle, "progress", l, l);
+        progressBarAnimator.setDuration(1000);
+        progressBarAnimator.setInterpolator(new LinearInterpolator());
+        progressBarAnimator.start();
+    }
+
+    private void Rudder(String channel4) {
+        tch4 = (TextView) findViewById(R.id.tvCH4);
+        tch4.setText("CH4 : " + channel4);
+        Float chRudder = Float.valueOf(channel4);
+        Integer m = Math.round(chRudder);
+        ObjectAnimator progressBarAnimator = ObjectAnimator.ofInt(Rudder, "progress", m, m);
+        progressBarAnimator.setDuration(1000);
+        progressBarAnimator.setInterpolator(new LinearInterpolator());
+        progressBarAnimator.start();
+    }
+
+    private void TrackingDrone(String dataLat, String dataLng) {
+        Double locLat = new Double(dataLat);
+        Double locLng = new Double(dataLng);
+        LatLng koordinat = new LatLng(locLat, locLng);
+        if (currentMarker!=null) {
+            currentMarker.remove();
+            currentMarker=null;
+        }
+        if (currentMarker==null) {
+            currentMarker = mMap.addMarker(new MarkerOptions().position(koordinat)
+                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.efalcon)));
+        }
+        for ( int k = 0; k < i;k++) {
+            WPconf(k);
+        }
+        PolylineOptions polylineOptions = new PolylineOptions();
+        // Setting the color of the polyline
+        polylineOptions.color(Color.BLUE);
+        // Setting the width of the polyline
+        polylineOptions.width(2);
+        //textView.getText((int) wpla);
+        // Adding the taped point to the ArrayList
+        if (mTracking == 2){
+            tracking.add(koordinat);
+            countTracking++;
+            // Setting points of polyline
+            polylineOptions.addAll(tracking);
+            polyline = mMap.addPolyline(polylineOptions);
+            if(countTracking == 10){
+                tracking.remove(0);
+                countTracking = 9;
+            }
+        }if(mTracking == 1){
+            polyline.remove();
+        }
+    }
+
+    private void FMode(String mode) {
+        Float md = Float.valueOf(mode);
+        Integer n = Math.round(md);
+        if (n == 0){
+            TvMode.setText("Flight Mode : Manual");
+        }
+        if (n == 1){
+            TvMode.setText("Flight Mode : Safe-Flight");
+        }
+        if (n == 2){
+            TvMode.setText("Flight Mode : Loiter");
+        }
+        else if(n == null){
+            TvMode.setText("Flight Mode");
+        }
+    }
+
+    /*private void tvSend(String wplat, String wplng) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                tvWPSend.setText(wplas + wplns);
+            }
+        });
+    }*/
+
+    private void starttimeFlight(){
+        if(!running){
+            timeFlight.setBase(SystemClock.elapsedRealtime() - pauseoffset);
+            timeFlight.start();
+            running = true;
+        }
+    }
+
+    private void stoptimeFlight(){
+        if(running) {
+            timeFlight.setBase(SystemClock.elapsedRealtime());
+            timeFlight.stop();
+            pauseoffset = 0;
+            running = false;
+        }
+    }
+
+    private void WPconf(int k){
+        wpla = circle[k].getCenter().latitude;
+        wpln = circle[k].getCenter().longitude;
+        wpradius = circle[k].getRadius();
+        Location.distanceBetween(currentMarker.getPosition().latitude, currentMarker.getPosition().longitude,
+                wpla, wpln, distance);
+        if (distance[0] < wpradius) {
+            inH = true;
+        } else {
+            inH = false;
+        }
+        if (inH == true && inbef == false) {
+            //if( distance[0] < wpradius  ){
+            Toast.makeText(getBaseContext(), "WP Success", Toast.LENGTH_SHORT).show();
+            circle[k] = mMap.addCircle(new CircleOptions()
+                    .center(circle[k].getCenter())
+                    .radius(6)
+                    .strokeWidth(1.0f)
+                    .strokeColor(Color.YELLOW)
+                    .fillColor(0x1500FFFF));
+            //wpMarker = mMap.addMarker(markerWP[k].icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
+            wpMarker = mMap.addMarker(new MarkerOptions().position(circle[k].getCenter())
+                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
+        }
+        inbef = inH;
+    }
+
+    private void storeImage(Bitmap image) {
+        File pictureFile = getOutputMediaFile();
+        if (pictureFile == null) {
+            Log.d(TAG,
+                    "Error creating media file, check storage permissions: ");// e.getMessage());
+            Toast.makeText(this, "Error creating media file, check storage permissions: ", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        try {
+            FileOutputStream fos = new FileOutputStream(pictureFile);
+            image.compress(Bitmap.CompressFormat.PNG, 90, fos);
+            fos.close();
+        } catch (FileNotFoundException e) {
+            Log.d(TAG, "File not found: " + e.getMessage());
+            Toast.makeText(this, "File not found: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+        } catch (IOException e) {
+            Log.d(TAG, "Error accessing file: " + e.getMessage());
+            Toast.makeText(this, "Error accessing file: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private  File getOutputMediaFile(){
+        File mediaStorageDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).toString());
+        if (! mediaStorageDir.exists()){
+            if (! mediaStorageDir.mkdirs()){
+                return null;
+            }
+        }
+        // Create a media file name
+        String timeStamp = new SimpleDateFormat("ddMMyyyy_HHmm").format(new Date());
+        File mediaFile;
+        String mImageName="PIGEON_"+ timeStamp +".jpg";
+        mediaFile = new File(mediaStorageDir.getPath() + File.separator + mImageName);
+        return mediaFile;
+    }
+
+    private void datalog(String roll, String pitch, String yaw, String lat, String lng, String alt, String mode){
+        File mediaStorageDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS).toString());
+        String timeStamp = new SimpleDateFormat("ddMMyyyy_HHmm").format(new Date());
+        File mediaFile;
+        String mImageName="PIGEON_LOG_"+ timeStamp +".txt";
+        mediaFile = new File(mediaStorageDir.getPath() + File.separator + mImageName);
+        String datalog = String.valueOf("Roll : " + roll + " " + "Pitch : " + pitch + " " + "Yaw : " + yaw + " " + "Latitude : " +
+                lat + " " + "Longitude : " + lng + " " + "Altitude : " + alt + " " + "Mode : " + mode + "\n");
+        Save(mediaFile,datalog);
+    }
+
+    public static void Save (File file, String data){
+        FileWriter fw = null;
+        BufferedWriter bw = null;
+        try {
+            fw = new FileWriter(file.getAbsoluteFile(), true);
+            bw = new BufferedWriter(fw);
+            bw.write(data);
+                //fos.write(data.getBytes());
+            }
+            catch (IOException e){e.printStackTrace();}
+            finally {
+            try {
+                if(bw!=null)
+                    bw.close();
+                if(fw!=null)
+                    fw.close();
+            }catch (IOException e){e.printStackTrace();}
+        }
+    }//*/
+
+    public Bitmap getBitmap() {
+        return mStream.getBitmap();
+    }
+
+    @Override
+    public void onComplete() {
+        Toast.makeText(this, "Playing", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onError() {
+        Toast.makeText(this, "Error, make sure your endpoint is correct", Toast.LENGTH_SHORT).show();
+        vlcVideoLibrary.stop();
+    }
+
+    @Override
+    public void onSurfaceTextureAvailable(SurfaceTexture surfaceTexture, int width, int height) {
+        //SurfaceTexture surfaceTexture;
+        surface = new Surface(surfaceTexture);
+    }
+
+    @Override
+    public void onSurfaceTextureSizeChanged(SurfaceTexture surface, int i, int i2) {
+
+    }
+
+    @Override
+    public boolean onSurfaceTextureDestroyed(SurfaceTexture surface) {
+        return false;
+    }
+
+    @Override
+    public void onSurfaceTextureUpdated(SurfaceTexture surface) {
+
+    }
+
+    public void reqPermission(){
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
+            requestPermissions(new String[] {Manifest.permission.WRITE_EXTERNAL_STORAGE},1);
+            requestPermissions(new String[] {Manifest.permission.READ_EXTERNAL_STORAGE},1);
+        }
+    }
+}
